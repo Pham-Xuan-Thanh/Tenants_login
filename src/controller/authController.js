@@ -8,22 +8,18 @@ const db = require('../config/db/confdb')
 
 class Auth {
     async register(req, res) {
-        console.log("hê hê1")
-        console.log(req.body)
         const {username, password} = req.body
-        console.log("hê hê1")
-        console.log(username)
         if(!username & !password)
           return res.status(400).json({success: false, message: "Username or password is incorrect"})
         try {
-            if (db.create(`mongodb://localhost:27017/${username}`)) // If create error
+            if (await db.connect(`mongodb://localhost:27017/${username}`)) // If create error
+            {
                 return res.status(501).json({success: false, message: "Server error"})
-            if (db.connect(`mongodb://localhost:27017/${username}`)) // If connect fail
-                return res.status(501).json({success: false, message: "Server error"})
+            }    
 
-            // const user = await User.findOne({username});
-            // if (user)
-            //     return res.status(400).json({success: false, message: "Username is existed"})
+            const user = await User.findOne({username});
+            if (user)
+                return res.status(400).json({success: false, message: "Username is existed"})
             const hashPW = await argon2.hash(password)
             const newUser = new User({username, password: hashPW})
             await newUser.save()
@@ -42,12 +38,12 @@ class Auth {
         if(!username & !password)
             return res.status(400).json({success: false, message: "Username or password is incorrect"})
         try {
-            if (db.connect(`mongodb://localhost:27017/${username}`)) // If connect fail
+            if (await db.connect(`mongodb://localhost:27017/${username}`)) // If connect fail
                 return res.status(400).json({success: false, message: "Username or password is incorrect"})
                 // return res.status(501).json({success: false, message: "Server error"})
-            // const user = await User.findOne({username})
-            // if (!user)
-                // res.status(400).json({success: false, message: "Username or password is incorrect"})
+            const user = await User.findOne({username})
+            if (!user)
+                res.status(400).json({success: false, message: "Username or password is incorrect"})
             
             const passwordValid = await argon2.verify(user.password, password)
             if(!passwordValid)
