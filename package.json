@@ -1,0 +1,26 @@
+{
+  "name": "express-restful",
+  "version": "1.0.0",
+  "description": "A Restfull API with Express ",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "nodemon  ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "thanhpx6",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^4.1.4",
+    "mongoose": "^6.0.12"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
