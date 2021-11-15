@@ -1,8 +1,8 @@
-const loginRouter = require('./login.route')
+const loginRouter = require('./login.router')
 
 function route(app) {
     
-    app.use('/login',loginRouter);
+    app.use('/auth', loginRouter);
     
     app.get('/', (req,res)=> {
         return res.send("Hello CC!!!!!! <3")
