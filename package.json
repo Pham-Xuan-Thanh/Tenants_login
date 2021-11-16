@@ -15,8 +15,10 @@
   "author": "thanhpx6",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.28.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.12"
   },

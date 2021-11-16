@@ -1,11 +1,14 @@
-const loginRouter = require('./login.route')
+const authRouter = require('./auth.route')
+const projectRouter = require('./project.route')
 
 function route(app) {
     
-    app.use('/login',loginRouter);
+    app.use('/auth',authRouter);
+
+    app.use('/project',projectRouter);
     
     app.get('/', (req,res)=> {
-        return res.send("Hello CC!!!!!! <3")
+        return res.send("Hello MB!!!!!! <3")
     })
 }
 

@@ -8,8 +8,13 @@ const route = require('./routes')
 
 const port = process.env.PORT || 3000;
 
-route(app);
+
+
+app.use(express.urlencoded());
+app.use(express.json());
 db.connect();
+
+route(app);
 
 
 app.listen(port, ()=> console.log(`Server running \n Listenning at http://127.0.0.1:${port}`))
