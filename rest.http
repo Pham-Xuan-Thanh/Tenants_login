@@ -1,0 +1,8 @@
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "tenantID": "619c99c498513ec0c3345490",
+    "username": "xeon6",
+    "password": "xeon6"
+}

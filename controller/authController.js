@@ -4,7 +4,7 @@ const Tenant = require("../models/tenant.model");
 const Token = require("../models/token.model");
 const jwt = require("jsonwebtoken");
 const isJwtExpired = require("jwt-check-expiration").isJwtExpired;
-const db = require("../config/db");
+const db = require("../config/db.config");
 
 class AuthController {
   async register(req, res) {
@@ -42,12 +42,11 @@ class AuthController {
       var userID = newUser._id;
 
       // Return token
+      var company = tenant.companyName;
       const accessToken = jwt.sign(
         { tenantID, company, userID, username },
-        process.env.ACCESS_TOKEN,
-        {
-          expiresIn: process.env.ACCESS_TOKEN_TIME,
-        }
+        process.env.JWT_ACCESS_TOKEN,
+        { expiresIn: process.env.JWT_TIME }
       );
 
       // Save token
@@ -60,6 +59,7 @@ class AuthController {
         .status(200)
         .json({ success: true, message: "User created", jwt: accessToken });
     } catch (error) {
+      db.connect();
       console.log(error);
       res.status(500).json({ success: false, message: "Server error" });
     }
@@ -100,11 +100,14 @@ class AuthController {
 
       const userID = user._id;
       const filter = { userID };
-      var accessToken = Token.findOne(filter);
-
+      var token = await Token.findOne(filter);
+      var accessToken = token.token;
       // If token is expired
-      const decodeToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN);
       if (isJwtExpired(accessToken)) {
+        const decodeToken = jwt.verify(
+          accessToken,
+          process.env.JWT_ACCESS_TOKEN
+        );
         accessToken = jwt.sign(
           {
             tenantID: decodeToken.tenantID,
@@ -112,20 +115,21 @@ class AuthController {
             userID,
             username,
           },
-          process.env.ACCESS_TOKEN,
+          process.env.JWT_ACCESS_TOKEN,
           {
-            expiresIn: process.env.ACCESS_TOKEN_TIME,
+            expiresIn: process.env.JWT_TIME,
           }
         );
         const update = { token: accessToken, updateAt: Date.now };
-        accessToken = Token.findOneAndUpdate(filter, update);
+        token = await Token.findOneAndUpdate(filter, update);
       }
-      accessToken = Token.findOne(filter);
+      token = await Token.findOne(filter);
 
       res
         .status(200)
         .json({ success: true, message: "Logged", jwt: accessToken });
     } catch (error) {
+      db.connect();
       console.log(error);
       res.status(500).json({ success: false, message: "Server error" });
     }
