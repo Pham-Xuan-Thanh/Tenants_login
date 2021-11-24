@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const Tenant = require("../models/tenant.model");
 const Token = require("../models/token.model");
 const jwt = require("jsonwebtoken");
+const jwtHelper = require('../middleware/auth');
 const isJwtExpired = require("jwt-check-expiration").isJwtExpired;
 const db = require("../config/db.config");
 
@@ -43,21 +44,18 @@ class AuthController {
 
       // Return token
       var company = tenant.companyName;
-      const accessToken = jwt.sign(
-        { tenantID, company, userID, username },
-        process.env.JWT_ACCESS_TOKEN,
-        { expiresIn: process.env.JWT_TIME }
-      );
+      const accessToken = jwtHelper.SignAccesToken({ tenantID, company, userID, username });
+      const refreshToken = jwtHelper.GenerateRefreshToken({ tenantID, company, userID, username });
 
       // Save token
-      const newToken = new Token({ userID, token: accessToken });
-      await newToken.save();
+      // const newToken = new Token({ userID, token: accessToken });
+      // await newToken.save();
 
       // Reconnect Main DB
       db.connect();
       res
         .status(200)
-        .json({ success: true, message: "User created", jwt: accessToken });
+        .json({ success: true, message: "User created", token: {accessToken, refreshToken }});
     } catch (error) {
       db.connect();
       console.log(error);
@@ -100,34 +98,38 @@ class AuthController {
 
       const userID = user._id;
       const filter = { userID };
-      var token = await Token.findOne(filter);
-      var accessToken = token.token;
-      // If token is expired
-      if (isJwtExpired(accessToken)) {
-        const decodeToken = jwt.verify(
-          accessToken,
-          process.env.JWT_ACCESS_TOKEN
-        );
-        accessToken = jwt.sign(
-          {
-            tenantID: decodeToken.tenantID,
-            company: decodeToken.company,
-            userID,
-            username,
-          },
-          process.env.JWT_ACCESS_TOKEN,
-          {
-            expiresIn: process.env.JWT_TIME,
-          }
-        );
-        const update = { token: accessToken, updateAt: Date.now };
-        token = await Token.findOneAndUpdate(filter, update);
-      }
-      token = await Token.findOne(filter);
+      const accessToken = jwtHelper.SignAccesToken({ tenantID,company : tenant.companyName, userID, username });
+      const refreshToken = jwtHelper.GenerateRefreshToken({ tenantID,company : tenant.companyName, userID, username });
 
+      // // If token is expired
+      // if (isJwtExpired(accessToken)) {
+      //   const decodeToken = jwt.verify(
+      //     accessToken,
+      //     process.env.JWT_ACCESS_TOKEN
+      //   );
+      //   accessToken = jwt.sign(
+      //     {
+      //       tenantID: decodeToken.tenantID,
+      //       company: decodeToken.company,
+      //       userID,
+      //       username,
+      //     },
+      //     process.env.JWT_ACCESS_TOKEN,
+      //     {
+      //       expiresIn: process.env.JWT_TIME,
+      //     }
+      //   );
+      //   const update = { token: accessToken, updateAt: Date.now };
+      //   token = await Token.findOneAndUpdate(filter, update);
+      // }
+      // token = await Token.findOne(filter);
+      
+      // Reconnect main DB 
+      db.connect();
       res
         .status(200)
-        .json({ success: true, message: "Logged", jwt: accessToken });
+        .json({ success: true, message: "Logged in ", token: {accessToken, refreshToken }});
+
     } catch (error) {
       db.connect();
       console.log(error);

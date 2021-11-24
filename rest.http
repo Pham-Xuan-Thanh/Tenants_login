@@ -2,7 +2,23 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "tenantID": "619c99c498513ec0c3345490",
-    "username": "xeon6",
-    "password": "xeon6"
+    "tenantID": "619dfa8f4c8c6e1b3582de2d",
+    "username": "xeon7",
+    "password": "xeon7"
 }
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "tenantID": "619dfa8f4c8c6e1b3582de2d",
+    "username": "xeon7",
+    "password": "xeon7"
+}
+
+
+###
+GET  http://localhost:3000/project/show
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWRmYThmNGM4YzZlMWIzNTgyZGUyZCIsImNvbXBhbnkiOiJUSElYVEhJWFRISVgiLCJ1c2VySUQiOiI2MTlkZmMyNzI3ZTcwZTc2ZDY4YjY4NzUiLCJ1c2VybmFtZSI6Inhlb243IiwiaWF0IjoxNjM3NzQzNzA5LCJleHAiOjE2Mzc3NDM3Mzl9.qrwVoYaxpFSRSocO82CLMD8hH5O-8JNuXJ05eiwuna0
