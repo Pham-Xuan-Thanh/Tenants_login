@@ -19,6 +19,17 @@ Content-Type: application/json
 
 
 ###
-GET  http://localhost:3000/project/show
+GET  http://localhost:3000/token
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWRmYThmNGM4YzZlMWIzNTgyZGUyZCIsImNvbXBhbnkiOiJUSElYVEhJWFRISVgiLCJ1c2VySUQiOiI2MTlkZmMyNzI3ZTcwZTc2ZDY4YjY4NzUiLCJ1c2VybmFtZSI6Inhlb243IiwiaWF0IjoxNjM3NzQzNzA5LCJleHAiOjE2Mzc3NDM3Mzl9.qrwVoYaxpFSRSocO82CLMD8hH5O-8JNuXJ05eiwuna0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWRmYThmNGM4YzZlMWIzNTgyZGUyZCIsImNvbXBhbnkiOiJUSElYVEhJWFRISVgiLCJ1c2VySUQiOiI2MTlkZmMyNzI3ZTcwZTc2ZDY4YjY4NzUiLCJ1c2VybmFtZSI6Inhlb243IiwiaWF0IjoxNjM4MzUwOTQzLCJleHAiOjE2MzgzNTQ1NDN9.m3_Pkc8Qia85-_WH_09zlMcxyJxfQHmvQjonuZc_Xng
+
+###
+GET http://localhost:3000/auth/logout
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWRmYThmNGM4YzZlMWIzNTgyZGUyZCIsImNvbXBhbnkiOiJUSElYVEhJWFRISVgiLCJ1c2VySUQiOiI2MTlkZmMyNzI3ZTcwZTc2ZDY4YjY4NzUiLCJ1c2VybmFtZSI6Inhlb243IiwiaWF0IjoxNjM4MzUyODMxLCJleHAiOjE2MzgzNTMxMzF9.B8yHQr7b8hlDPkiTHdzc7PfJEZ2feB8LcnpSWnfeH2Y
+
+
+
+{
+    "userID" : "" 
+}
