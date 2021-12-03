@@ -2,9 +2,9 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "tenantID": "619dfa8f4c8c6e1b3582de2d",
-    "username": "xeon7",
-    "password": "xeon7"
+    "tenantID": "619c99c498513ec0c3345490",
+    "username": "thanhxeon",
+    "password": "thanhxeon"
 }
 
 ###
@@ -12,9 +12,9 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "tenantID": "619dfa8f4c8c6e1b3582de2d",
-    "username": "xeon7",
-    "password": "xeon7"
+    "tenantID": "619c99c498513ec0c3345490",
+    "username": "thanhxeon",
+    "password": "thanhxeon"
 }
 
 
@@ -29,7 +29,17 @@ Content-Type: application/json
 Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWRmYThmNGM4YzZlMWIzNTgyZGUyZCIsImNvbXBhbnkiOiJUSElYVEhJWFRISVgiLCJ1c2VySUQiOiI2MTlkZmMyNzI3ZTcwZTc2ZDY4YjY4NzUiLCJ1c2VybmFtZSI6Inhlb243IiwiaWF0IjoxNjM4MzUyODMxLCJleHAiOjE2MzgzNTMxMzF9.B8yHQr7b8hlDPkiTHdzc7PfJEZ2feB8LcnpSWnfeH2Y
 
 
+###
+POST http://localhost:3000/project/add
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWM5OWM0OTg1MTNlYzBjMzM0NTQ5MCIsImNvbXBhbnkiOiJmcHQiLCJ1c2VySUQiOiI2MWE5OGU0NGVkMTRkODMxZjJlMzBlZTYiLCJ1c2VybmFtZSI6InRoYW5oeGVvbiIsImlhdCI6MTYzODUwMjY1MSwiZXhwIjoxNjM4NTAyOTUxfQ.Y-K1nmtEaC5lvXpYPpUc2EgZz2cfay7oz-9GIkUrp_M
 
 {
-    "userID" : "" 
+    "projectName": "619c99c498513ec0c3345490",
+    "description": "thanhxeon"
 }
+
+###
+GET http://localhost:3000/project/show
+Content-Type: application/json
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJRCI6IjYxOWM5OWM0OTg1MTNlYzBjMzM0NTQ5MCIsImNvbXBhbnkiOiJmcHQiLCJ1c2VySUQiOiI2MWE5OGU0NGVkMTRkODMxZjJlMzBlZTYiLCJ1c2VybmFtZSI6InRoYW5oeGVvbiIsImlhdCI6MTYzODUwMzQwMSwiZXhwIjoxNjM4NTA2NDAxfQ.G05Grb_OYjKQdJIJ5dUM8OcEEnjv2FYJqPmXmaASKx4

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var authRouter = require('./auth.route')
-const jwtToken = require('../middleware/auth');
+var projectRouter = require('./project.route')
 const authController = require('../controller/authController');
 
 /* GET home page. */
@@ -10,6 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.use('/auth', authRouter)
+router.use('/project', projectRouter)
 
 router.get('/token', authController.refreshToken)
 

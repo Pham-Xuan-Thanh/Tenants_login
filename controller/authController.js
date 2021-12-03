@@ -1,13 +1,12 @@
 const argon2 = require("argon2");
 const User = require("../models/user.model");
 const Tenant = require("../models/tenant.model");
-const Token = require("../models/token.model");
-const jwt = require("jsonwebtoken");
-const jwtHelper = require('../middleware/auth');
+// const Token = require("../models/token.model");
+// const jwt = require("jsonwebtoken");
+const jwtHelper = require("../middleware/auth");
 const isJwtExpired = require("jwt-check-expiration").isJwtExpired;
 const db = require("../config/db.config");
-const RedisClient  = require("../config/redis.config");
-
+const RedisClient = require("../config/redis.config");
 
 class AuthController {
   async register(req, res) {
@@ -32,11 +31,12 @@ class AuthController {
 
       // Check username
       const user = await User.findOne({ username });
-      if (user)
+      if (user) {
+        db.connect();
         return res
           .status(400)
           .json({ success: false, message: "Username is existed" });
-
+      }
       // Create a new user and save
       const hashPW = await argon2.hash(password);
       const newUser = new User({ username, password: hashPW });
@@ -46,8 +46,18 @@ class AuthController {
 
       // Return token
       var company = tenant.companyName;
-      const accessToken = jwtHelper.SignAccessToken({ tenantID, company, userID, username });
-      const refreshToken = jwtHelper.GenerateRefreshToken({ tenantID, company, userID, username });
+      const accessToken = jwtHelper.SignAccessToken({
+        tenantID,
+        company,
+        userID,
+        username,
+      });
+      const refreshToken = jwtHelper.GenerateRefreshToken({
+        tenantID,
+        company,
+        userID,
+        username,
+      });
 
       // Save token
       // const newToken = new Token({ userID, token: accessToken });
@@ -55,9 +65,11 @@ class AuthController {
 
       // Reconnect Main DB
       db.connect();
-      res
-        .status(200)
-        .json({ success: true, message: "User created", token: {accessToken, refreshToken }});
+      res.status(200).json({
+        success: true,
+        message: "User created",
+        token: { accessToken, refreshToken },
+      });
     } catch (error) {
       db.connect();
       console.log(error);
@@ -100,8 +112,18 @@ class AuthController {
 
       const userID = user._id;
       const filter = { userID };
-      const accessToken = jwtHelper.SignAccessToken({ tenantID,company : tenant.companyName, userID, username });
-      const refreshToken = jwtHelper.GenerateRefreshToken({ tenantID,company : tenant.companyName, userID, username });
+      const accessToken = jwtHelper.SignAccessToken({
+        tenantID,
+        company: tenant.companyName,
+        userID,
+        username,
+      });
+      const refreshToken = jwtHelper.GenerateRefreshToken({
+        tenantID,
+        company: tenant.companyName,
+        userID,
+        username,
+      });
 
       // // If token is expired
       // if (isJwtExpired(accessToken)) {
@@ -125,13 +147,14 @@ class AuthController {
       //   token = await Token.findOneAndUpdate(filter, update);
       // }
       // token = await Token.findOne(filter);
-      
-      // Reconnect main DB 
-      db.connect();
-      res
-        .status(200)
-        .json({ success: true, message: "Logged in ", token: {accessToken, refreshToken }});
 
+      // Reconnect main DB
+      db.connect();
+      res.status(200).json({
+        success: true,
+        message: "Logged in ",
+        token: { accessToken, refreshToken },
+      });
     } catch (error) {
       db.connect();
       console.log(error);
@@ -140,56 +163,51 @@ class AuthController {
   }
 
   async refreshToken(req, res) {
-     try {
-       const refreshToken = req.body.token || req.headers.authorization.split(' ')[1];
-       if (!refreshToken) throw "Bad Request";
+    try {
+      const refreshToken =
+        req.body.token || req.headers.authorization.split(" ")[1];
+      if (!refreshToken) throw "Bad Request";
 
-       const result =  await jwtHelper.VerifyRefreshToken(refreshToken)
-        // .then((data) => {payload = data;})
-        // .catch((err) => {throw err} );
-       const {iat , exp, ...payload} = result;
-       // reSign token 
-       const accessToken =  jwtHelper.SignAccessToken(payload);
-       const refToken = jwtHelper.GenerateRefreshToken(payload); 
-       return res.status(200).json({success: true, message: "Re-allocated ", token: {accessToken, refToken }});
-     } catch (error) {
-       return res.status(500).json({success : false , error});
-       
-     } 
-    
+      const result = await jwtHelper.VerifyRefreshToken(refreshToken);
+      // .then((data) => {payload = data;})
+      // .catch((err) => {throw err} );
+      const { iat, exp, ...payload } = result;
+      // reSign token
+      const accessToken = jwtHelper.SignAccessToken(payload);
+      const refToken = jwtHelper.GenerateRefreshToken(payload);
+      return res.status(200).json({
+        success: true,
+        message: "Re-allocated ",
+        token: { accessToken, refToken },
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, error });
+    }
   }
 
-  async logout( req, res, next) {
-   
-    
+  async logout(req, res, next) {
     try {
       const token = req.token;
-      const {userID} = req.userData;
-      if (!token || !userID )  throw "Bad Request!";
-      
+      const { userID } = req.userData;
+      if (!token || !userID) throw "Bad Request!";
       else {
-        RedisClient.del(userID.toString(), (err,data) => {
+        RedisClient.del(userID.toString(), (err, data) => {
           if (err) {
             console.log(err);
             throw err;
           }
-        } );
-        RedisClient.set('BL_' + userID.toString(), token,(err,data) => {
+        });
+        RedisClient.set("BL_" + userID.toString(), token, (err, data) => {
           if (err) {
             console.log(err);
             throw err;
           }
-        } );
-        res.status(200).json({success : true , message: "Logged out"});
+        });
+        res.status(200).json({ success: true, message: "Logged out" });
       }
-      
     } catch (error) {
-      res.status(500).json({success : false ,cc:"VV", error});
+      res.status(500).json({ success: false, cc: "VV", error });
     }
-   
-
-
-
   }
 }
 
